@@ -26,8 +26,8 @@ resource "azurerm_virtual_network" "vnet" {
 resource "azurerm_subnet" "subnet" {
   name                 = "subnet-demo"
   address_prefixes     = ["10.0.1.0/24"]
-  virtual_network_name = azurerm_virtual_network.name
-  resource_group_name  = azurerm_resource_group.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  resource_group_name  = azurerm_resource_group.rg.name
 }
 
 resource "azurerm_network_security_group" "nsg" {
@@ -39,8 +39,8 @@ resource "azurerm_network_security_group" "nsg" {
     name                       = "allow-ssh"
     priority                   = 100
     direction                  = "Inbound"
-    access                     = "allow"
-    protocol                   = "tcp"
+    access                     = "Allow"
+    protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
     source_address_prefix      = "*"
@@ -60,7 +60,7 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-resource "azurerm_network_interface_security_group_assocation" "nic_nsg" {
+resource "azurerm_network_interface_security_group_association" "nic_nsg" {
   network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
